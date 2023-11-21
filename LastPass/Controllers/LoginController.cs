@@ -23,20 +23,32 @@ namespace LastPass.Controllers
             return View();
         }
 
+        public ActionResult Login()
+        {
+            return View();
+        }
         [HttpPost]
         public ActionResult Login(User user)
         {
             var login = db.User.Where(x => x.UserName == user.UserName).SingleOrDefault();
-            if (login.UserName == user.UserName && login.Password == user.Password )//Crypto.Hash(user.Sifre, "MD5"))
+            if (login!=null)
             {
-                Session["id"] = login.Id;
-                Session["UserName"] = login.UserName;
-                //Session["yetki"] = login.Yetki;
+                if (login.UserName == user.UserName && login.Password == user.Password)//Crypto.Hash(user.Sifre, "MD5"))
+                {
+                    Session["id"] = login.Id;
+                    Session["UserName"] = login.UserName;
+                    //Session["yetki"] = login.Yetki;
 
-                return RedirectToAction("Index", "Login");
+                    return RedirectToAction("Index", "Login");
+                }
+
+                ViewBag.Uyari = "Kullanıcı adı ya da şifre yanlış";
             }
-            ViewBag.Uyari = "Kullanıcı adı ya da şifre yanlış";
-            return View(login);
+            else
+            {
+                ViewBag.Uyari = "Kayıtlı kullanıcı bulunamadı";
+            }
+            return Index();
         }
 
         public ActionResult Logout()
