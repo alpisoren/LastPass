@@ -8,7 +8,7 @@ using System.Web.Mvc;
 
 namespace LastPass.Controllers
 {
-    public class UserController : Controller
+    public class UserController : BaseController
     {
         dbContext db = new dbContext();
         // GET: Login
@@ -31,9 +31,10 @@ namespace LastPass.Controllers
                 {
                     Session["id"] = login.Id;
                     Session["UserName"] = login.UserName;
+                    HttpContext.Session.Add("id", login.Id);
                     //Session["yetki"] = login.Yetki;
 
-                    return RedirectToAction("Index", "Login");
+                    return RedirectToAction("Index", "PasswordRecord");
                 }
 
                 ViewBag.Uyari = "Kullanıcı adı ya da şifre yanlış";

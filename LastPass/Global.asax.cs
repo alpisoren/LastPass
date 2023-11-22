@@ -16,6 +16,7 @@ namespace LastPass
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+            HttpContext.Current.Session["Id"]=null;
         }
     }
 }

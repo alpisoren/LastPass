@@ -16,7 +16,7 @@ namespace LastPass.Models.DataContext
 
         }
         public DbSet<User> User { get; set; }
-        public DbSet<PasswordRecord> PasswordCaPasswordRecordtegory { get; set; }
+        public DbSet<PasswordRecord> PasswordRecord { get; set; }
         public DbSet<PasswordCategory> PasswordCategory { get; set; }
 
 

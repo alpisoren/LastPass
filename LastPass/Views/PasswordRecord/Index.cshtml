@@ -1,0 +1,58 @@
+﻿@model IEnumerable<LastPass.Models.Model.PasswordRecord>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#myTable').DataTable({
+            "language": {
+                "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Turkish.json"
+            }
+        });
+
+    });
+
+</script>
+<h2>Şifrelerim</h2>
+
+<a class="btn btn-default" href="/PasswordRecord/Create">Yeni ekle </a>
+<table class="table table-striped" id="myTable">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Kayıt Tanımı</th>
+            <th>Url</th>
+            <th>Kullanıcı Adı</th>
+            <th>Şifre</th>
+            <th>Kategori</th>
+            <td>İşlemler</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>@item.Id</td>
+
+            <td>@item.Info</td>
+            <td>@item.URL</td>
+            <td>@item.UserName</td>
+            <td>@item.Password</td>
+            <td>@item.PasswordCategory.Name</td>
+
+
+            <td>
+                <a href="/PasswordRecord/Edit/@item.Id">Düzenle</a>
+                <a href="/PasswordRecord/Delete/@item.Id">Sil</a>
+            </td>
+        </tr>
+        }
+
+
+    </tbody>
+</table>
+
+
