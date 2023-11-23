@@ -42,8 +42,10 @@ namespace LastPass.Repository
 
         public virtual void Delete(T entity)
         {
-            db.Set<T>().Remove(entity);
+            //db.Set<T>().Remove(entity);
+            db.Entry(entity).State= EntityState.Deleted;
             db.SaveChanges();
+            //db.SaveChanges();
         }
 
     }

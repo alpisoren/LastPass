@@ -18,5 +18,16 @@ namespace LastPass.Repository
         {
             return db.User.Where(x => x.UserName == userName).SingleOrDefault();
         }
+        public bool UserNameExist(string userName)
+        {
+            var result = false;
+            var data = db.User.Where(x => x.UserName == userName).SingleOrDefault();
+            if (data!=null)
+            {
+                result = true;
+            }
+            return result;
+        }
     }
+
 }

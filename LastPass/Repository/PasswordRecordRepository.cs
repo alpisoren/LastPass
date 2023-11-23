@@ -21,6 +21,12 @@ namespace LastPass.Repository
             var source = db.PasswordRecord.Include("PasswordCategory").Where(x => x.User.Id == userID).ToList().OrderByDescending(y => y.Id).ToList();
             return source;
         }
+        public override PasswordRecord GetById(int id)
+        {
+            var source = db.PasswordRecord.Include("PasswordCategory").Where(x => x.Id==id).FirstOrDefault();
+            return source;
+        }
+     
 
         public override void Create(PasswordRecord entity)
         {
@@ -43,6 +49,11 @@ namespace LastPass.Repository
         public List<PasswordCategory> GetPasswordCategories()
         {
             return db.Set<PasswordCategory>().ToList();
+
+        }
+        public PasswordCategory GetPasswordCategoriesById(int Id)
+        {
+            return db.PasswordCategory.Where(x => x.Id == Id).SingleOrDefault();
 
         }
 

@@ -29,15 +29,14 @@ namespace LastPass.Controllers
         [HttpPost]
         public ActionResult Login(User user)
         {
-            var login = userRepository.GetByUserName(user.UserName);//db.User.Where(x => x.UserName == user.UserName).SingleOrDefault();
+            var login = userRepository.GetByUserName(user.UserName);
             if (login!=null)
             {
-                if (login.UserName == user.UserName && login.Password == user.Password)//Crypto.Hash(user.Sifre, "MD5"))
+                if (login.UserName == user.UserName && login.Password == user.Password)
                 {
                     Session["id"] = login.Id;
                     Session["UserName"] = login.UserName;
                     HttpContext.Session.Add("id", login.Id);
-                    //Session["yetki"] = login.Yetki;
 
                     return RedirectToAction("Index", "PasswordRecord");
                 }
@@ -66,12 +65,22 @@ namespace LastPass.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult SignUp(User User, string password, string userName)
+        public ActionResult SignUp(User User)
         {
             if (ModelState.IsValid)
             {
-               userRepository.Create(User);
-                return RedirectToAction("Login");
+                if (!userRepository.UserNameExist(User.UserName))
+                {
+
+                    userRepository.Create(User);
+                    return RedirectToAction("Login");
+                }
+                else
+                {
+                    ModelState.AddModelError("Username", "Kullanıcı adı mevcut");
+                    return View(User);
+                }
+
             }
             return View();
         }

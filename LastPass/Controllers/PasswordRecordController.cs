@@ -26,7 +26,6 @@ namespace LastPass.Controllers
             
             return View(passwordRecordRepository.GetByActiveUser(CurrentUserId));
 
-            //return View(db.PasswordRecord.Include("PasswordCategory").Where( x=>x.User.Id==CurrentUserId).ToList().OrderByDescending(y => y.Id));
         }
 
         public ActionResult Create()
@@ -92,7 +91,7 @@ namespace LastPass.Controllers
                 entity.Password = dto.Password;
                 entity.URL = dto.URL;
                 entity.UserName = dto.UserName;
-                entity.PasswordCategory = dto.PasswordCategory;
+                entity.PasswordCategory = passwordRecordRepository.GetPasswordCategoriesById(dto.PasswordCategory.Id);
 
                 passwordRecordRepository.Update(entity);
                 return RedirectToAction("Index");
