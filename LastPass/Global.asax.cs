@@ -16,7 +16,14 @@ namespace LastPass
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-            HttpContext.Current.Session["Id"]=null;
+            //HttpContext.Current.Session["id"]=null;
+        }
+
+        protected void Session_Start(object sender, EventArgs e)
+        {
+            string sessionId = Session.SessionID;
+            string ipAddress = Request.UserHostAddress;
+
         }
     }
 }

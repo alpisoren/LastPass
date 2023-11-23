@@ -14,7 +14,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - Kurumsal Web Admin</title>
+    <title>@ViewBag.Title - LastPass</title>
 
 
     <meta charset="utf-8">
@@ -81,8 +81,7 @@
             </div>
 
             <!--logo start-->
-            <!--TODO:KurumsaWeb Değiştirmek için-->
-            <a href="/Admin/Index/" class="logo">KurumsalWeb <span class="lite">Admin</span></a>
+            <a href="/PasswordRecord/Index/" class="logo">LastPass</a> @*<span class="lite">Admin</span>*@
             <!--logo end-->
 
             <div class="nav search-row" id="top_menu">
@@ -105,17 +104,16 @@
                     <li class="dropdown">
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                             <span class="profile-ava">
-                                <img alt="" src="/Content/LoginLayout/avatar1_small.jpg">
+                                <img alt="" src="/Content/LoginLayout/user.png">
                             </span>
-                        
+                            <span class="username">@Session["UserName"]</span>
                             <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu extended logout">
                             <div class="log-arrow-up"></div>
-                           
 
                             <li>
-                                <a href="/Admin/Logout/"><i class="icon_key_alt"></i>Çıkış Yap</a>
+                                <a href="/User/Logout/"><i class="icon_key_alt"></i>Çıkış Yap</a>
                             </li>
 
                         </ul>
@@ -132,30 +130,19 @@
                 <!-- sidebar menu start-->
                 <ul class="sidebar-menu">
                     <li class="active">
-                        <a class="" href="/yonetimpaneli">
+                        <a class="" href="/PasswordRecord/Index">
                             <i class="icon_house_alt"></i>
-                            <span>Admin Özet</span>
+                            <span>Şifrelerim</span>
                         </a>
                     </li>
                     
                     <li>
-                        <a class="" href="/Hizmet/Index">
+                        <a class="" href="/PasswordCategories/Index">
                             <i class="icon_genius"></i>
-                            <span>Hizmetler</span>
+                            <span>Şifre Kategorileri</span>
                         </a>
                     </li>
-                    <li class="sub-menu">
-                        <a href="javascript:;" class="">
-                            <i class="icon_document_alt"></i>
-                            <span>Blog</span>
-                            <span class="menu-arrow arrow_carrot-right"></span>
-                        </a>
-                        <ul class="sub">
-                            <li><a class="" href="/Kategori/Index">Kategoriler</a></li>
-                            <li><a class="" href="/Blog/Index">Blog Kayıtları</a></li>
-                            <li><a class="" href="/Blog/Index">Blog Yorumları</a></li>
-
-                        </ul>
+                    
                    
 
                 </ul>

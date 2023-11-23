@@ -7,6 +7,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
+
 namespace LastPass.Controllers
 {
     public class PasswordRecordController : BaseController
@@ -16,12 +17,12 @@ namespace LastPass.Controllers
         // GET: PasswordRecord
         public ActionResult Index()
         {
-            return View(db.PasswordRecord.Include("PasswordCategory").ToList().OrderByDescending(x => x.Id));
+            return View(db.PasswordRecord.Include("PasswordCategory").Where( x=>x.User.Id==CurrentUserId).ToList().OrderByDescending(y => y.Id));
         }
 
         public ActionResult Create()
         {
-            ViewBag.PasswordCategoryID = new SelectList(db.PasswordCategory, "PasswordCategoryID", "Name");
+            ViewBag.PasswordCategory = new SelectList(db.PasswordCategory, "Id", "Name");
             return View();
         }
 
@@ -30,13 +31,13 @@ namespace LastPass.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(PasswordRecord passwordRecord)
         {
-            if (ModelState.IsValid)
-            {
+            if (ModelState.IsValid) { 
+                passwordRecord.User = GetActiveUser();
 
-                passwordRecord.User = _user;
-
-                //db.Entry(passwordRecord.User).State = EntityState.Unchanged;
+                db.Entry(passwordRecord.User).State = EntityState.Unchanged;
+                db.Entry(entity.PasswordCategory).State = EntityState.Unchanged;
                 db.PasswordRecord.Add(passwordRecord);
+
                 db.SaveChanges();
                 return RedirectToAction("Index");
 
@@ -44,7 +45,14 @@ namespace LastPass.Controllers
 
             return View(passwordRecord);
         }
-
+        
+        [HttpPost]
+        public string PasswordGenerator()
+        {
+            var newPass = "";
+            newPass = Guid.NewGuid().ToString();
+            return newPass;
+        }
 
         public ActionResult Edit(int? id)
         {
@@ -57,7 +65,7 @@ namespace LastPass.Controllers
             {
                 return HttpNotFound();
             }
-            ViewBag.PasswordCategoryID = new SelectList(db.PasswordCategory, "Id", "Name", passwordRecord.PasswordCategory.Id);
+            ViewBag.PasswordCategory = new SelectList(db.PasswordCategory, "Id", "Name", passwordRecord.PasswordCategory?.Id);
             return View(passwordRecord);
         }
         [HttpPost]
@@ -78,7 +86,7 @@ namespace LastPass.Controllers
                 entity.PasswordCategory = dto.PasswordCategory;
                 if (entity.User==null)
                 {
-                    entity.User = _user;
+                    entity.User = GetActiveUser(); ;
                 }
                 db.Entry(entity.User).State = EntityState.Unchanged;
                 db.Entry(entity.PasswordCategory).State = EntityState.Unchanged;

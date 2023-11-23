@@ -10,20 +10,20 @@ namespace LastPass.Controllers
 {
     public class BaseController : Controller
     {
-        public User _user;
-         
+        
         dbContext db = new dbContext();
 
-        public BaseController()
+        protected int CurrentUserId
         {
-            _user = GetActiveUser();
+            get { return (int)Session["id"]; }
         }
+
         // GET: Base
         public User GetActiveUser()
         {
             if (Session != null)
             {
-                var userId = Convert.ToInt32(Session["Id"]);
+                var userId = CurrentUserId;
                 var user = db.User.Where(x => x.Id == userId).SingleOrDefault();
                 return user;
             }

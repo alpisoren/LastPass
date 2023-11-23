@@ -23,8 +23,8 @@ namespace LastPass.Models.Model
 
         public PasswordCategory PasswordCategory { get; set; }
 
-        [Required]
         public User User { get; set; }
+
 
     }
 }

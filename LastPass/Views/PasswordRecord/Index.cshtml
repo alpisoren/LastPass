@@ -41,7 +41,7 @@
             <td>@item.URL</td>
             <td>@item.UserName</td>
             <td>@item.Password</td>
-            <td>@item.PasswordCategory.Name</td>
+            <td>@(item.PasswordCategory != null ? item.PasswordCategory.Name : "N/A")</td>
 
 
             <td>
