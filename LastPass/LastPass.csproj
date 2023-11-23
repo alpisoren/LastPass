@@ -127,7 +127,6 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\BaseController.cs" />
-    <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PasswordCategoriesController.cs" />
     <Compile Include="Controllers\PasswordRecordController.cs" />
     <Compile Include="Controllers\UserController.cs" />
@@ -141,6 +140,11 @@
     <Compile Include="Models\Model\PasswordRecord.cs" />
     <Compile Include="Models\Model\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repository\BaseRepository.cs" />
+    <Compile Include="Repository\PasswordRecordRepository.cs" />
+    <Compile Include="Repository\PasswordCategoryRepository.cs" />
+    <Compile Include="Repository\UserRepository.cs" />
+    <Compile Include="Repository\IRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />
@@ -947,9 +951,6 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_UserLayout.cshtml" />
-    <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\Home\Contact.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\User\Login.cshtml" />
     <Content Include="Views\User\SignUp.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
@@ -959,7 +960,6 @@
     <Content Include="Views\PasswordRecord\Delete.cshtml" />
     <Content Include="Views\PasswordCategories\Create.cshtml" />
     <Content Include="Views\PasswordCategories\Delete.cshtml" />
-    <Content Include="Views\PasswordCategories\Details.cshtml" />
     <Content Include="Views\PasswordCategories\Edit.cshtml" />
     <Content Include="Views\PasswordCategories\Index.cshtml" />
   </ItemGroup>

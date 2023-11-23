@@ -1,5 +1,6 @@
 ﻿using LastPass.Models.DataContext;
 using LastPass.Models.Model;
+using LastPass.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,11 @@ namespace LastPass.Controllers
 {
     public class UserController : BaseController
     {
-        dbContext db = new dbContext();
+        private UserRepository userRepository;
+        public UserController()
+        {
+             userRepository = new UserRepository(new dbContext());
+        }
         // GET: Login
         public ActionResult Index()
         {
@@ -24,7 +29,7 @@ namespace LastPass.Controllers
         [HttpPost]
         public ActionResult Login(User user)
         {
-            var login = db.User.Where(x => x.UserName == user.UserName).SingleOrDefault();
+            var login = userRepository.GetByUserName(user.UserName);//db.User.Where(x => x.UserName == user.UserName).SingleOrDefault();
             if (login!=null)
             {
                 if (login.UserName == user.UserName && login.Password == user.Password)//Crypto.Hash(user.Sifre, "MD5"))
@@ -65,47 +70,12 @@ namespace LastPass.Controllers
         {
             if (ModelState.IsValid)
             {
-                //User.Password = Crypto.Hash(password, "MD5");
-                db.User.Add(User);
-                db.SaveChanges();
+               userRepository.Create(User);
                 return RedirectToAction("Login");
             }
             return View();
         }
-        //public ActionResult Edit(int id)
-        //{
-        //    var user = db.User.Where(x => x.Id == id).SingleOrDefault();
-        //    return View();
-        //}
-        //[HttpPost]
-        //public ActionResult Edit(int id, User User, string password, string email)
-        //{
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        var user = db.User.Where(x => x.Id == id).SingleOrDefault();
-        //        user.Password = password;// Crypto.Hash(password, "MD5");
-        //        user.Email = User.Email;
-        //        //user.Yetki = User.Yetki;
-
-
-        //        db.User.Add(User);
-        //        db.SaveChanges();
-        //        return RedirectToAction("Userler");
-        //    }
-        //    return View();
-        //}
-        //public ActionResult Delete(int id)
-        //{
-        //    var a = db.User.Where(x => x.Id == id).SingleOrDefault();
-        //    if (a != null)
-        //    {
-        //        db.User.Remove(a);
-        //        db.SaveChanges();
-        //        return RedirectToAction("Userler");
-        //    }
-        //    return View();
-        //}
+       
 
     }
 }

@@ -1,5 +1,6 @@
 ﻿using LastPass.Models.DataContext;
 using LastPass.Models.Model;
+using LastPass.Repository;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -14,15 +15,24 @@ namespace LastPass.Controllers
     {
 
         dbContext db = new dbContext();
-        // GET: PasswordRecord
+        private PasswordRecordRepository passwordRecordRepository;
+        public PasswordRecordController()
+        {
+            passwordRecordRepository = new PasswordRecordRepository(new dbContext());
+        }
+
         public ActionResult Index()
         {
-            return View(db.PasswordRecord.Include("PasswordCategory").Where( x=>x.User.Id==CurrentUserId).ToList().OrderByDescending(y => y.Id));
+            
+            return View(passwordRecordRepository.GetByActiveUser(CurrentUserId));
+
+            //return View(db.PasswordRecord.Include("PasswordCategory").Where( x=>x.User.Id==CurrentUserId).ToList().OrderByDescending(y => y.Id));
         }
 
         public ActionResult Create()
         {
-            ViewBag.PasswordCategory = new SelectList(db.PasswordCategory, "Id", "Name");
+
+            ViewBag.PasswordCategory = new SelectList(passwordRecordRepository.GetPasswordCategories(), "Id", "Name");
             return View();
         }
 
@@ -33,12 +43,7 @@ namespace LastPass.Controllers
         {
             if (ModelState.IsValid) { 
                 passwordRecord.User = GetActiveUser();
-
-                db.Entry(passwordRecord.User).State = EntityState.Unchanged;
-                db.Entry(entity.PasswordCategory).State = EntityState.Unchanged;
-                db.PasswordRecord.Add(passwordRecord);
-
-                db.SaveChanges();
+                passwordRecordRepository.Create(passwordRecord);
                 return RedirectToAction("Index");
 
             }
@@ -60,12 +65,12 @@ namespace LastPass.Controllers
             {
                 return HttpNotFound();
             }
-            var passwordRecord = db.PasswordRecord.Where(x => x.Id == id).SingleOrDefault();
+            var passwordRecord = passwordRecordRepository.GetById((int)id);
             if (passwordRecord == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.PasswordCategory = new SelectList(db.PasswordCategory, "Id", "Name", passwordRecord.PasswordCategory?.Id);
+            ViewBag.PasswordCategory = new SelectList(passwordRecordRepository.GetPasswordCategories(), "Id", "Name", passwordRecord.PasswordCategory?.Id);
             return View(passwordRecord);
         }
         [HttpPost]
@@ -77,20 +82,19 @@ namespace LastPass.Controllers
 
             if (ModelState.IsValid)
             {
-                var entity = db.PasswordRecord.Where(x => x.Id == id).SingleOrDefault();
+                var entity = passwordRecordRepository.GetById((int)id);
 
+                if (entity.User == null)
+                {
+                    entity.User = GetActiveUser(); ;
+                }
                 entity.Info = dto.Info;
                 entity.Password = dto.Password;
                 entity.URL = dto.URL;
                 entity.UserName = dto.UserName;
                 entity.PasswordCategory = dto.PasswordCategory;
-                if (entity.User==null)
-                {
-                    entity.User = GetActiveUser(); ;
-                }
-                db.Entry(entity.User).State = EntityState.Unchanged;
-                db.Entry(entity.PasswordCategory).State = EntityState.Unchanged;
-                db.SaveChanges();
+
+                passwordRecordRepository.Update(entity);
                 return RedirectToAction("Index");
             }
 
@@ -101,7 +105,7 @@ namespace LastPass.Controllers
         public ActionResult Delete(int id)
         {
 
-            var passwordRecord = db.PasswordRecord.Find(id);
+            var passwordRecord = passwordRecordRepository.GetById(id);
             if (passwordRecord == null)
             {
                 return HttpNotFound();
@@ -115,15 +119,12 @@ namespace LastPass.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int? id)
         {
-            PasswordRecord passwordRecord = db.PasswordRecord.Find(id);
+            PasswordRecord passwordRecord = passwordRecordRepository.GetById((int)id);
             if (passwordRecord == null)
             {
                 return HttpNotFound();
             }
-            
-
-            db.PasswordRecord.Remove(passwordRecord);
-            db.SaveChanges();
+            passwordRecordRepository.Delete(passwordRecord);
             return RedirectToAction("Index");
         }
 

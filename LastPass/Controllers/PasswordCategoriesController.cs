@@ -8,33 +8,24 @@ using System.Web;
 using System.Web.Mvc;
 using LastPass.Models.DataContext;
 using LastPass.Models.Model;
+using LastPass.Repository;
 
 namespace LastPass.Controllers
 {
     public class PasswordCategoriesController : Controller
     {
-        private dbContext db = new dbContext();
+      
+        private PasswordCategoryRepository passwordCategoriesRepository;
+        public PasswordCategoriesController()
+        {
+            passwordCategoriesRepository = new PasswordCategoryRepository(new dbContext());
+        }
 
-        // GET: PasswordCategories
         public ActionResult Index()
         {
-            return View(db.PasswordCategory.ToList());
+            return View(passwordCategoriesRepository.GetAll().ToList());
         }
 
-        // GET: PasswordCategories/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            PasswordCategory passwordCategory = db.PasswordCategory.Find(id);
-            if (passwordCategory == null)
-            {
-                return HttpNotFound();
-            }
-            return View(passwordCategory);
-        }
 
         // GET: PasswordCategories/Create
         public ActionResult Create()
@@ -42,17 +33,13 @@ namespace LastPass.Controllers
             return View();
         }
 
-        // POST: PasswordCategories/Create
-        // Aşırı gönderim saldırılarından korunmak için, bağlamak istediğiniz belirli özellikleri etkinleştirin, 
-        // daha fazla bilgi için bkz. https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,Name")] PasswordCategory passwordCategory)
         {
             if (ModelState.IsValid)
             {
-                db.PasswordCategory.Add(passwordCategory);
-                db.SaveChanges();
+                passwordCategoriesRepository.Create(passwordCategory);
                 return RedirectToAction("Index");
             }
 
@@ -66,7 +53,7 @@ namespace LastPass.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            PasswordCategory passwordCategory = db.PasswordCategory.Find(id);
+            PasswordCategory passwordCategory = passwordCategoriesRepository.GetById((int)id);
             if (passwordCategory == null)
             {
                 return HttpNotFound();
@@ -74,17 +61,13 @@ namespace LastPass.Controllers
             return View(passwordCategory);
         }
 
-        // POST: PasswordCategories/Edit/5
-        // Aşırı gönderim saldırılarından korunmak için, bağlamak istediğiniz belirli özellikleri etkinleştirin, 
-        // daha fazla bilgi için bkz. https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,Name")] PasswordCategory passwordCategory)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(passwordCategory).State = EntityState.Modified;
-                db.SaveChanges();
+                passwordCategoriesRepository.Update(passwordCategory);
                 return RedirectToAction("Index");
             }
             return View(passwordCategory);
@@ -97,7 +80,7 @@ namespace LastPass.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            PasswordCategory passwordCategory = db.PasswordCategory.Find(id);
+            PasswordCategory passwordCategory = passwordCategoriesRepository.GetById((int)id);
             if (passwordCategory == null)
             {
                 return HttpNotFound();
@@ -105,24 +88,14 @@ namespace LastPass.Controllers
             return View(passwordCategory);
         }
 
-        // POST: PasswordCategories/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            PasswordCategory passwordCategory = db.PasswordCategory.Find(id);
-            db.PasswordCategory.Remove(passwordCategory);
-            db.SaveChanges();
+            PasswordCategory passwordCategory = passwordCategoriesRepository.GetById((int)id);
+            passwordCategoriesRepository.Delete(passwordCategory);
             return RedirectToAction("Index");
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
     }
 }
